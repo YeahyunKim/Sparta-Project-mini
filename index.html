@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>꿈러리</title>
@@ -33,7 +33,7 @@
 
     }
 
-    
+
     .inner {
         max-width: 1160px;
         width: 100%;
@@ -50,15 +50,16 @@
     /*///profile-area 영역입니다.///*/
     .profile-area {
         background-color: #191919;
+        padding: 66px 0px 146px 0px;
     }
-    
-    .profile-info-wrap {
+
+    .profile-area .profile-info-wrap {
         display: flex;
         justify-content: space-evenly;
         flex-wrap: wrap;
     }
 
-    .profile-info-wrap .profile-image {
+    .profile-area .profile-info-wrap .profile-image {
         width: 180px;
         height: 180px;
         border-radius: 50%;
@@ -69,21 +70,22 @@
         margin-bottom: 20px;
     }
 
-    .profile-info-wrap .profile-info .profile-image img {
-        width: 100%;
-        height: auto;
-    }
-
-    .profile-info-wrap .profile-info {
+    .profile-area .profile-info-wrap .profile-info {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        margin: 0 20px;
-        
+        margin: 80px 20px 0px 20px;
+
     }
 
-    .profile-info-wrap .profile-info .p-goal {
+    .profile-area .profile-info-wrap .profile-info .profile-image img {
+        width: 100%;
+        height: auto;
+    }
+
+
+    .profile-area .profile-info-wrap .profile-info .p-goal {
         display: inline;
         font-size: 21px;
         font-weight: 300;
@@ -91,16 +93,83 @@
         margin-bottom: 8px;
     }
 
-    .profile-info-wrap .profile-info .p-name {
+    .profile-area .profile-info-wrap .profile-info .p-name {
         color: white;
         font-size: 23px;
         font-weight: 600;
     }
 
 
+    /*///profile-detail-area 영역입니다.///*/
+    .profile-detail-area {
+        background-color: #292929;
+        padding: 80px 0px
+    }
 
+    .profile-detail-area:nth-child(even) {
+        background-color: #191919;
+    }
 
+    /* .profile-detail-area .profile-detail-wrap{
+        display: flex;
+        flex-wrap: wrap;
+    } */
 
+    .profile-detail-area .profile-detail-wrap .profile-detail-info {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .profile-image {
+        width: 370px;
+        height: 370px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 100px;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .text-wrap {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        max-width: 690px;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .p-d-is {
+        font-size: 24px;
+        font-weight: 200;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .p-d-goal {
+        font-size: 40px;
+        font-weight: 600;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .p-d-name {
+        font-size: 30px;
+        font-weight: 200;
+        color: white;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .p-d-goal-name-wrap {
+        margin-bottom: 30px;
+    }
+
+    .profile-detail-area .profile-detail-wrap .profile-detail-info .p-d-description {
+        font-size: 18px;
+        font-weight: 200;
+        color: #F0F0F0;
+        word-break: keep-all;
+        word-wrap: break-word;
+        line-height: 1.5;
+    }
 </style>
 
 <body>
@@ -139,7 +208,94 @@
                     <p class="p-name">김예현</p>
                 </div>
             </div>
-            
+
+        </div>
+    </div>
+    <div class="profile-detail-area">
+        <div class="inner">
+            <div class="profile-detail-wrap">
+                <div class="profile-detail-info">
+                    <div class="profile-image">
+                        <img src="https://ifh.cc/g/xpqLvh.jpg.jpg" alt="원형 이미지">
+                    </div>
+                    <div class="text-wrap">
+                        <p class="p-d-is">나의 꿈은</p>
+                        <div class="p-d-goal-name-wrap">
+                            <span class="p-d-goal">포기하지 않는 개발자</span>
+                            <span class="p-d-name">김예현</span>
+                        </div>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="profile-detail-area">
+        <div class="inner">
+            <div class="profile-detail-wrap">
+                <div class="profile-detail-info">
+                    <div class="profile-image">
+                        <img src="https://ifh.cc/g/xpqLvh.jpg.jpg" alt="원형 이미지">
+                    </div>
+                    <div class="text-wrap">
+                        <p class="p-d-is">나의 꿈은</p>
+                        <div class="p-d-goal-name-wrap">
+                            <span class="p-d-goal">포기하지 않는 개발자</span>
+                            <span class="p-d-name">김예현</span>
+                        </div>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-detail-area">
+        <div class="inner">
+            <div class="profile-detail-wrap">
+                <div class="profile-detail-info">
+                    <div class="profile-image">
+                        <img src="https://ifh.cc/g/xpqLvh.jpg.jpg" alt="원형 이미지">
+                    </div>
+                    <div class="text-wrap">
+                        <p class="p-d-is">나의 꿈은</p>
+                        <div class="p-d-goal-name-wrap">
+                            <span class="p-d-goal">포기하지 않는 개발자</span>
+                            <span class="p-d-name">김예현</span>
+                        </div>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-detail-area">
+        <div class="inner">
+            <div class="profile-detail-wrap">
+                <div class="profile-detail-info">
+                    <div class="profile-image">
+                        <img src="https://ifh.cc/g/xpqLvh.jpg.jpg" alt="원형 이미지">
+                    </div>
+                    <div class="text-wrap">
+                        <p class="p-d-is">나의 꿈은</p>
+                        <div class="p-d-goal-name-wrap">
+                            <span class="p-d-goal">포기하지 않는 개발자</span>
+                            <span class="p-d-name">김예현</span>
+                        </div>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                    </div>
+
+
+                </div>
+            </div>
         </div>
     </div>
 

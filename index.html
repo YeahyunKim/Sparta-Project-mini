@@ -2,11 +2,38 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>꿈러리</title>
 </head>
+
+<script type="module">
+    // [CREATE] 영역입니다.
+    // $("#saveBtn").click(async function () {
+    //     let profile_img_url = $("#profile_img_url").val();
+    //     let name = $("#name").val();
+    //     let goal = $("#goal").val();
+    //     let description = $("#description").val();
+
+    //     let doc = {
+    //         'profile_img_url': profile_img_url,
+    //         'name': name,
+    //         'goal': goal,
+    //         'description': description,
+    //     };
+
+    //     await addDoc(collection(db, "User"), doc);
+    //     alert('저장 완료!');
+    //     window.location.reload();
+    // })
+
+    // 팝업 영역입니다.
+    $(".share-btn").click(function () {
+        console.log("hello")
+    });
+
+</script>
 
 <style>
     @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
@@ -171,7 +198,7 @@
         line-height: 1.5;
     }
 
-
+    /*///꿈 공유하기 버튼 영역입니다.///*/
     .share-btn {
         display: inline-block;
         font-size: 24px;
@@ -186,13 +213,94 @@
         background-color: #FFECB7;
         font-weight: 600;
         border-radius: 38px;
-        
+
         cursor: pointer;
     }
+
+    /*///꿈 공유하기 버튼 팝업 영역입니다.///*/
+    .share-popup {
+        max-width: 800px;
+        width: 100%;
+        padding: 100px 70px 60px 70px;
+        background-color: #191919;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 40px;
+    }
+
+
+    .share-popup input {
+        width: 100%;
+        height: 33px;
+        background-color: #303030;
+        border: none; /* 테두리 제거 */
+        border-radius: 10px; /* 둥근 모서리 적용 */
+        padding: 10px 0px 10px 30px;
+        color: white;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .share-popup textarea {
+        width: 100%;
+        height: 103px;
+        background-color: #303030;
+        border: none; /* 테두리 제거 */
+        border-radius: 10px; /* 둥근 모서리 적용 */
+        padding: 30px 0px 30px 30px;
+        color: white;
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .share-popup textarea:focus {
+        border-color: white; /* 활성화 시 테두리 색상 변경 */
+        outline: none; /* 기본 윤곽선 제거 */
+    }
+
+    .share-popup input:focus {
+        border-color: white; /* 활성화 시 테두리 색상 변경 */
+        outline: none; /* 기본 윤곽선 제거 */
+    }
+
+    .share-popup #saveBtn {
+        font-size: 22px;
+        width: 78px;
+        font-weight: 600;
+        padding: 10px 26px;
+        background-color: #FFECB7;
+        border-radius: 38px;
+        margin: 0 auto;
+    }
+
 </style>
 
 <body>
+    <div class="share-popup" id="postingBox">
+        <div class="form">
+            <input type="email" class="form-control" id="profile_img_url" placeholder="이미지 URL">
+        </div>
+        <div class="form">
+            <input type="email" class="form-control" id="name" placeholder="이름">
+        </div>
+
+        <div class="form">
+            <input type="email" class="form-control" id="goal" placeholder="나의 꿈">
+        </div>
+
+        <div class="form-floating mb-3">
+            <textarea type="description" id="description" rows="4" cols="50" placeholder="나의 소개"></textarea>
+        </div>
+
+        <div id="saveBtn" type="button">등록하기</div>
+
+    </div>
+
     <div class="share-btn">나의 꿈 공유하기</div>
+
+
     <div class="header">
         <img src="./img/00_header.png">
     </div>
@@ -244,7 +352,10 @@
                             <span class="p-d-goal">최고의 CTO</span>
                             <span class="p-d-name">어동선</span>
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
+                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
+                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
+                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
                     </div>
 
 
@@ -252,7 +363,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="profile-detail-area">
         <div class="inner">
             <div class="profile-detail-wrap">
@@ -266,7 +377,10 @@
                             <span class="p-d-goal">포기하지 않는 개발자</span>
                             <span class="p-d-name">김예현</span>
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
+                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
+                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
+                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
                     </div>
 
 
@@ -288,7 +402,10 @@
                             <span class="p-d-goal">백엔드의 정점</span>
                             <span class="p-d-name">박준영</span>
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
+                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
+                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
+                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
                     </div>
 
 
@@ -310,7 +427,10 @@
                             <span class="p-d-goal">자바스프링 마스터</span>
                             <span class="p-d-name">황태경</span>
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이 눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를 느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기 보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
+                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
+                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
+                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
                     </div>
 
 

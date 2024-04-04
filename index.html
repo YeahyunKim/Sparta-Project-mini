@@ -20,34 +20,34 @@
     });
 
     // [CREATE] 팝업 - 등록하기 버튼
-    $("#saveBtn").click(async function () {
-        let profile_img_url = $("#profile_img_url").val();
-        let name = $("#name").val();
-        let goal = $("#goal").val();
-        let description = $("#description").val();
+    // $("#saveBtn").click(async function () {
+    //     let profile_img_url = $("#profile_img_url").val();
+    //     let name = $("#name").val();
+    //     let goal = $("#goal").val();
+    //     let description = $("#description").val();
 
-        let doc = {
-            'profile_img_url': profile_img_url,
-            'name': name,
-            'goal': goal,
-            'description': description,
-        };
-        if (profile_img_url === '' || name === '' || goal === '' || description === '') {
-            alert("정보를 모두 입력해주세요.")
-        } else {
-            alert("입력되었습니다.")
-            await addDoc(collection(db, "User"), doc);
-            alert('등록이 완료되었습니다.');
-            $(".share-popup").hide();
-            $(".disabled-cover").animate({
-                opacity: 0.0
-            }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-            $(".disabled-cover").hide();
-            $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
-            window.location.reload();
-        }    
+    //     let doc = {
+    //         'profile_img_url': profile_img_url,
+    //         'name': name,
+    //         'goal': goal,
+    //         'description': description,
+    //     };
+    //     if (profile_img_url === '' || name === '' || goal === '' || description === '') { //데이터 입력 확인
+    //         alert("정보를 모두 입력해주세요.")
+    //     } else {
+    //         // alert("입력되었습니다.")
+    //         await addDoc(collection(db, "User"), doc);
+    //         alert('등록이 완료되었습니다.');
+    //         $(".share-popup").hide();
+    //         $(".disabled-cover").animate({
+    //             opacity: 0.0
+    //         }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+    //         $(".disabled-cover").hide();
+    //         $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
+    //         window.location.reload();
+    //     }    
 
-    })
+    // })
 
     // 팝업 - 취소버튼
     $("#cancelBtn").click(function () {
@@ -58,6 +58,7 @@
         $(".disabled-cover").hide();
         $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
     });
+
 
 
 
@@ -151,7 +152,7 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        margin: 80px 20px 0px 20px;
+        margin: 80px 30px 0px 30px;
 
     }
 
@@ -415,6 +416,14 @@
                     <p class="p-goal">백엔드의 정점</p>
                     <p class="p-name">박준영</p>
                 </div>
+                <div class="profile-info">
+                    <div class="profile-image">
+                        <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
+                    </div>
+                    <p class="p-goal">자바스프링 마스터</p>
+                    <p class="p-name">황태경</p>
+                </div>
+
                 <div class="profile-info">
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">

@@ -27,6 +27,8 @@
         }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
     });
 
+
+
     // [CREATE] 팝업 - 등록하기 버튼
     $("#saveBtn").click(async function () {
         let profile_img_url = $("#profile_img_url").val();
@@ -69,6 +71,25 @@
         $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
     });
 
+
+    // [Delete] 팝업 - 삭제하기 버튼
+    $("#deleteBtn").click(async function () {
+        // 문서 ID 가져오기 (예시로 'docId'를 사용)
+        let docId = $(this).attr("data-doc-id"); // 데이터 id값을 여기에 추가해야 할 것 같네요!
+        
+        console.log(docId)
+
+        let docRef = doc(db, "User", docId);
+
+        // 정보 삭제하기
+        await deleteDoc(docRef).then(() => {
+            alert("성공적으로 삭제되었습니다.");
+            window.location.reload();
+        }).catch((error) => {
+            console.error("문서 삭제 중 오류 발생: ", error);
+            alert("문서를 삭제하는 데 실패했습니다.");
+        });
+    });
 
 
 
@@ -490,7 +511,7 @@
     <div class="delete-popup">
         <p class="warning-text">정보를 삭제하시겠습니까?</p>
         <div class="button-wrap">
-            <div id="deleteBtn" data-doc-id="DOCUMENT_ID_HERE">삭제하기</div>
+            <div id="deleteBtn" data-doc-id="여기 아이디값 넣어야해요">삭제하기</div>
             <div class="cancel-btn" type="button">취소</div>
         </div>
     </div>

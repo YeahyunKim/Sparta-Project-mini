@@ -10,10 +10,8 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-    import { doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
 
     // Firebase 구성 정보 설정
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -32,8 +30,6 @@
     const db = getFirestore(app);
 
     let users = await getDocs(collection(db, "User"));
-
-
 
     // [CREATE] 팝업 - 등록하기 버튼
     $("#saveBtn").click(async function () {
@@ -70,19 +66,19 @@
 
     // [DELETE] 팝업 - 삭제하기 버튼
     $("#deleteBtn").click(async function () {
-            console.log('test')
-            let userId = $(this).attr("data-id"); 
+        console.log('test')
+        let userId = $(this).attr("data-id");
 
-            let docRef = doc(db, "User", userId); // 문서 참조 생성
+        let docRef = doc(db, "User", userId); // 문서 참조 생성
 
-            // 정보 삭제하기
-            await deleteDoc(docRef).then(() => {
-                alert("성공적으로 삭제되었습니다.");
-                window.location.reload();
-            }).catch((error) => {
-                console.error("문서 삭제 중 오류 발생: ", error);
-                alert("문서를 삭제하는 데 실패했습니다.");
-            });
+        // 정보 삭제하기
+        await deleteDoc(docRef).then(() => {
+            alert("성공적으로 삭제되었습니다.");
+            window.location.reload();
+        }).catch((error) => {
+            console.error("문서 삭제 중 오류 발생: ", error);
+            alert("문서를 삭제하는 데 실패했습니다.");
+        });
     });
 
 
@@ -94,6 +90,7 @@
         let temp_profile_info_html = `
                 <div class="profile-info">
                     <div class="delete-btn" data-id="${user.id}"></div>
+                    <div class="update-btn" data-id="${user.id}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill : #c6c6c6" d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></div>
                     <div class="profile-image">
                         <img src="${row["profile_img_url"]}" alt="원형 이미지">
                     </div>
@@ -105,7 +102,7 @@
 
 
         let temp_profile_detail_area_html = `
-                <div class="profile-detail-area">
+                <div class="profile-detail-area" data-id="${user.id}">
                     <div class="inner">
                         <div class="profile-detail-wrap">
                             <div class="profile-detail-info">
@@ -133,11 +130,60 @@
 
     // 등록팝업 띄우기 버튼
     $(".share-btn").click(function () {
-        $(".popup").show();
+        $(".share-popup").show();
         $(".disabled-cover").show();
         $(".disabled-cover").animate({
             opacity: 0.8
         }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+    });
+
+    // 수정팝업 띄우기 버튼
+    $(".update-btn").click(function () {
+        let userId = $(this).attr("data-id");
+        let imgURL = $(".profile-detail-area[data-id='" + userId + "']").find("img").attr("src");
+        let goalValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-goal").text();
+        let nameValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-name").text();
+        let descriptionValue = $(".profile-detail-area[data-id='" + userId + "']").find(".p-d-description").text();
+
+
+        $("#update_goal").val(goalValue);
+        $("#update_name").val(goalValue);
+        $("#update_profile_img_url").val(imgURL);
+        $("#updateDescription").val(goalValue);
+
+
+        $(".update-popup").show();
+        // $(".update-popup > #profile_img_url").val() = userId.name
+        $(".disabled-cover").show();
+        $(".disabled-cover").animate({
+            opacity: 0.8
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경 
+        $("#updateBtn").attr("data-id", userId)
+    });
+
+    $("#updateBtn").click(async function () {
+        // 문서 참조 생성
+        let userId = $(this).attr("data-id"); // 데이터 id값을 여기에 추가
+        const userRef = doc(db, "User", userId);
+
+        let profile_img_url = $("#update_profile_img_url").val();
+        let name = $("#update_name").val();
+        let goal = $("#update_goal").val();
+        let description = $("#updateDescription").val();
+
+        // 데이터 업데이트
+        await updateDoc(userRef, {
+            'profile_img_url': profile_img_url,
+            'name': name,
+            'goal': goal,
+            'description': description
+        }).then(() => {
+            alert("업데이트가 완료되었습니다.");
+            window.location.reload();
+        }).catch((error) => {
+            console.error("업데이트 중 오류 발생: ", error);
+            alert("업데이트를 실패했습니다.");
+        });
     });
 
     // 삭제팝업 띄우기 버튼
@@ -148,7 +194,6 @@
             opacity: 0.8
         }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
         let userId = $(this).attr("data-id"); // 데이터 id값을 여기에 추가해야 할 것 같네요!
-        console.log(userId)
         $("#deleteBtn").attr("data-id", userId)
     });
 
@@ -184,10 +229,27 @@
         }
     });
 
+    //input에 value 값이 존재 하지 않을 경우 saveBtn disabled 처리
+    $('.form-control-update, #updateDescription').on('input', function () {
+        // 모든 입력 필드를 검사하여 값이 있는지 확인
+        var allFilled = true;
+        $('.form-control-update, #updateDescription').each(function () {
+            if ($(this).val() === '') {
+                allFilled = false;
+                return false;
+            }
+        });
 
-    $(document).ready(function() {
-    // 여기에 코드를 넣으세요.
+        // 모든 인풋이 채워져 있으면 saveBtn의 배경색 변경
+        if (allFilled) {
+            $('#updateBtn').css('background-color', '#FFECB7');
+            $('#updateBtn').css('color', '#000000');
+        } else {
+            $('#updateBtn').css('background-color', '');
+        }
     });
+
+
 </script>
 
 <style>
@@ -268,7 +330,8 @@
         position: relative;
     }
 
-    .delete-btn, .update-btn {
+    .delete-btn,
+    .update-btn {
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
     }
@@ -280,11 +343,12 @@
 
 
 
-    .profile-area .profile-info-wrap .profile-info .delete-btn, .update-btn {
+    .profile-area .profile-info-wrap .profile-info .delete-btn,
+    .update-btn {
         display: none;
     }
 
-    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .delete-btn  {
+    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .delete-btn {
         display: block;
         width: 40px;
         height: 40px;
@@ -297,7 +361,7 @@
         cursor: pointer;
     }
 
-    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .update-btn  {
+    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .update-btn {
         display: block;
         width: 40px;
         height: 40px;
@@ -547,13 +611,14 @@
         /* 기본 윤곽선 제거 */
     }
 
-    .popup #saveBtn {
+    .popup #saveBtn,
+    #updateBtn {
         font-size: 22px;
         font-weight: 600;
         padding: 10px 26px;
         /* background-color: #FFECB7; */
         background-color: #5c5c5c;
-        color: #7c7c7c;
+        color: #6b6b6b;
         border-radius: 38px;
         margin-right: 20px;
         cursor: pointer;
@@ -612,22 +677,22 @@
 
     <div class="update-popup popup">
         <div class="form">
-            <input class="form-control" data-id='' id="profile_img_url" placeholder="이미지 URL">
+            <input class="form-control-update" data-id='' id="update_profile_img_url" placeholder="이미지 URL">
         </div>
         <div class="form">
-            <input class="form-control" data-id=''id="name" placeholder="이름">
+            <input class="form-control-update" data-id='' id="update_name" placeholder="이름">
         </div>
 
         <div class="form">
-            <input class="form-control" data-id='' id="goal" placeholder="나의 꿈">
+            <input class="form-control-update" data-id='' id="update_goal" placeholder="나의 꿈">
         </div>
 
         <div class="form-floating mb-3">
-            <textarea id="description" data-id='' rows="4" cols="50" placeholder="나의 소개"></textarea>
+            <textarea id="updateDescription" data-id='' rows="4" cols="50" placeholder="나의 소개"></textarea>
         </div>
 
         <div class="button-wrap">
-            <div id="saveBtn" type="button">등록하기</div>
+            <div id="updateBtn" type="button">수정하기</div>
             <div class="cancel-btn" type="button">취소</div>
         </div>
     </div>
@@ -681,26 +746,6 @@
                 <div class="profile-info">
                     <div class="delete-btn" data-id="tes4"></div>
                     <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                    <div class="profile-image">
-                        <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
-                    </div>
-                    <p class="p-goal">자바스프링 마스터</p>
-                    <p class="p-name">황태경</p>
-                </div>
-
-                <div class="profile-info">
-                    <div class="delete-btn" data-id="test5"></div>
-                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
-                    <div class="profile-image">
-                        <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
-                    </div>
-                    <p class="p-goal">자바스프링 마스터</p>
-                    <p class="p-name">황태경</p>
-                </div>
-
-                <div class="profile-info">
-                    <div class="delete-btn" data-id="test6"></div>
-                    <div class="update-btn" data-id="test"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill : #c6c6c6" d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></div>
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
                     </div>

@@ -66,7 +66,6 @@
 
     // [DELETE] 팝업 - 삭제하기 버튼
     $("#deleteBtn").click(async function () {
-        console.log('test')
         let userId = $(this).attr("data-id");
 
         let docRef = doc(db, "User", userId); // 문서 참조 생성
@@ -153,7 +152,6 @@
 
 
         $(".update-popup").show();
-        // $(".update-popup > #profile_img_url").val() = userId.name
         $(".disabled-cover").show();
         $(".disabled-cover").animate({
             opacity: 0.8
@@ -193,7 +191,7 @@
         $(".disabled-cover").animate({
             opacity: 0.8
         }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-        let userId = $(this).attr("data-id"); // 데이터 id값을 여기에 추가해야 할 것 같네요!
+        let userId = $(this).attr("data-id");
         $("#deleteBtn").attr("data-id", userId)
     });
 

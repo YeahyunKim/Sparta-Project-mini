@@ -9,23 +9,29 @@
 </head>
 
 <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-    // 팝업
-    $(".share-btn").click(function () {
-        $(".share-popup").show();
-        $(".disabled-cover").show();
-        $(".disabled-cover").animate({
-            opacity: 0.8
-        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-    });
+    // Firebase 구성 정보 설정
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyBJjynWr0LoVFbJgOm5MVz2q5XfCozCAsE",
+        authDomain: "spartatest-f638d.firebaseapp.com",
+        projectId: "spartatest-f638d",
+        storageBucket: "spartatest-f638d.appspot.com",
+        messagingSenderId: "576318895369",
+        appId: "1:576318895369:web:3941a32b6190cc84dc8fd8",
+        measurementId: "G-B3H2JY72M1"
+    };
 
-    $(".delete-btn").click(function () {
-        $(".delete-popup").show();
-        $(".disabled-cover").show();
-        $(".disabled-cover").animate({
-            opacity: 0.8
-        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
-    });
+    // Firebase 인스턴스 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let users = await getDocs(collection(db, "User"));
 
 
 
@@ -36,62 +42,127 @@
         let goal = $("#goal").val();
         let description = $("#description").val();
 
-        let doc = {
+        let user = {
             'profile_img_url': profile_img_url,
             'name': name,
             'goal': goal,
             'description': description,
         };
+
         if (profile_img_url === '' || name === '' || goal === '' || description === '') { //데이터 입력 확인
             alert("정보를 모두 입력해주세요.")
         } else {
             // alert("입력되었습니다.")
-            await addDoc(collection(db, "User"), doc);
+            await addDoc(collection(db, "User"), user);
             alert('등록이 완료되었습니다.');
-            $(".share-popup").hide();
+            $(".popup").hide();
             $(".disabled-cover").animate({
                 opacity: 0.0
             }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
             $(".disabled-cover").hide();
             $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
             window.location.reload();
-        }    
-
+        }
     })
 
-    // 팝업 - 취소버튼
+
+
+
+    // [DELETE] 팝업 - 삭제하기 버튼
+    $("#deleteBtn").click(async function () {
+            console.log('test')
+            let userId = $(this).attr("data-id"); 
+
+            let docRef = doc(db, "User", userId); // 문서 참조 생성
+
+            // 정보 삭제하기
+            await deleteDoc(docRef).then(() => {
+                alert("성공적으로 삭제되었습니다.");
+                window.location.reload();
+            }).catch((error) => {
+                console.error("문서 삭제 중 오류 발생: ", error);
+                alert("문서를 삭제하는 데 실패했습니다.");
+            });
+    });
+
+
+
+    // [TEMPLATE]
+    users.forEach((user) => {
+        let row = user.data();
+
+        let temp_profile_info_html = `
+                <div class="profile-info">
+                    <div class="delete-btn" data-id="${user.id}"></div>
+                    <div class="profile-image">
+                        <img src="${row["profile_img_url"]}" alt="원형 이미지">
+                    </div>
+                    <p class="p-goal">${row["goal"]}</p>
+                    <p class="p-name">${row["name"]}</p>
+                </div>
+            `;
+        $("#profileList").append(temp_profile_info_html);
+
+
+        let temp_profile_detail_area_html = `
+                <div class="profile-detail-area">
+                    <div class="inner">
+                        <div class="profile-detail-wrap">
+                            <div class="profile-detail-info">
+                                <div class="profile-image">
+                                    <img src="${row["profile_img_url"]}" alt="원형 이미지">
+                                </div>
+                                <div class="text-wrap">
+                                    <p class="p-d-is">나의 꿈은</p>
+                                    <div class="p-d-goal-name-wrap">
+                                        <span class="p-d-goal">${row["goal"]}</span>
+                                        <span class="p-d-name">${row["name"]}</span>
+                                    </div>
+                                    <span class="p-d-description">${row["description"]}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        $("#profileDetailInfoList").append(temp_profile_detail_area_html)
+    });
+
+
+
+
+    // 등록팝업 띄우기 버튼
+    $(".share-btn").click(function () {
+        $(".popup").show();
+        $(".disabled-cover").show();
+        $(".disabled-cover").animate({
+            opacity: 0.8
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+    });
+
+    // 삭제팝업 띄우기 버튼
+    $(".delete-btn").click(function () {
+        $(".delete-popup").show();
+        $(".disabled-cover").show();
+        $(".disabled-cover").animate({
+            opacity: 0.8
+        }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
+        let userId = $(this).attr("data-id"); // 데이터 id값을 여기에 추가해야 할 것 같네요!
+        console.log(userId)
+        $("#deleteBtn").attr("data-id", userId)
+    });
+
+    // 등록,삭제팝업 - 취소버튼
     $(".cancel-btn").click(function () {
         console.log("hh")
         $(".delete-popup").hide();
-        $(".share-popup").hide();
+        $(".popup").hide();
         $(".disabled-cover").animate({
             opacity: 0.0
         }, 500); // 500ms(1초) 동안 투명도를 0.2로 변경
         $(".disabled-cover").hide();
         $('.form-control, #description').val(''); //취소 클릭시 인풋 초기화
     });
-
-
-    // [Delete] 팝업 - 삭제하기 버튼
-    $("#deleteBtn").click(async function () {
-        // 문서 ID 가져오기 (예시로 'docId'를 사용)
-        let docId = $(this).attr("data-doc-id"); // 데이터 id값을 여기에 추가해야 할 것 같네요!
-        
-        console.log(docId)
-
-        let docRef = doc(db, "User", docId);
-
-        // 정보 삭제하기
-        await deleteDoc(docRef).then(() => {
-            alert("성공적으로 삭제되었습니다.");
-            window.location.reload();
-        }).catch((error) => {
-            console.error("문서 삭제 중 오류 발생: ", error);
-            alert("문서를 삭제하는 데 실패했습니다.");
-        });
-    });
-
-
 
     //input에 value 값이 존재 하지 않을 경우 saveBtn disabled 처리
     $('.form-control, #description').on('input', function () {
@@ -114,6 +185,9 @@
     });
 
 
+    $(document).ready(function() {
+    // 여기에 코드를 넣으세요.
+    });
 </script>
 
 <style>
@@ -121,6 +195,11 @@
 
     * {
         font-family: 'Pretendard';
+    }
+
+    svg {
+        width: 17px;
+        margin: 11.5px;
     }
 
     body {
@@ -189,11 +268,23 @@
         position: relative;
     }
 
-    .profile-area .profile-info-wrap .profile-info .delete-btn {
+    .delete-btn, .update-btn {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .profile-info:hover .delete-btn,
+    .profile-info:hover .update-btn {
+        opacity: 1;
+    }
+
+
+
+    .profile-area .profile-info-wrap .profile-info .delete-btn, .update-btn {
         display: none;
     }
 
-    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .delete-btn {
+    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .delete-btn  {
         display: block;
         width: 40px;
         height: 40px;
@@ -206,8 +297,20 @@
         cursor: pointer;
     }
 
-    .profile-area .profile-info-wrap .profile-info:nth-child(n+5)
-    .delete-btn::before,
+    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .update-btn  {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: #646464;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        right: 50px;
+        transform: translate(50%, -50%);
+        cursor: pointer;
+    }
+
+    .profile-area .profile-info-wrap .profile-info:nth-child(n+5) .delete-btn::before,
     .delete-btn::after {
         content: '';
         position: absolute;
@@ -386,7 +489,7 @@
 
 
     /*///꿈 공유하기 버튼 팝업 영역입니다.///*/
-    .share-popup {
+    .popup {
         display: none;
         max-width: 800px;
         width: 100%;
@@ -398,10 +501,11 @@
         transform: translate(-50%, -50%);
         border-radius: 40px;
         z-index: 5;
+        box-shadow: 0px -1px 16px 0px rgba(255, 255, 255, 0.3);
     }
 
 
-    .share-popup input {
+    .popup input {
         width: 100%;
         height: 33px;
         background-color: #303030;
@@ -415,7 +519,7 @@
         margin-bottom: 20px;
     }
 
-    .share-popup textarea {
+    .popup textarea {
         width: 100%;
         height: 103px;
         background-color: #303030;
@@ -429,21 +533,21 @@
         margin-bottom: 20px;
     }
 
-    .share-popup textarea:focus {
+    .popup textarea:focus {
         border-color: white;
         /* 활성화 시 테두리 색상 변경 */
         outline: none;
         /* 기본 윤곽선 제거 */
     }
 
-    .share-popup input:focus {
+    .popup input:focus {
         border-color: white;
         /* 활성화 시 테두리 색상 변경 */
         outline: none;
         /* 기본 윤곽선 제거 */
     }
 
-    .share-popup #saveBtn {
+    .popup #saveBtn {
         font-size: 22px;
         font-weight: 600;
         padding: 10px 26px;
@@ -455,7 +559,7 @@
         cursor: pointer;
     }
 
-    .share-popup .cancel-btn {
+    .popup .cancel-btn {
         font-size: 22px;
         font-weight: 600;
         padding: 10px 26px;
@@ -476,16 +580,15 @@
         left: 0;
         width: 100%;
         height: 100%;
-        opacity: 0.2;
-        background-color: rgba(0, 0, 0);
+        opacity: 0.6;
+        background-color: #757575;
         z-index: 3;
         display: none;
     }
 </style>
 
 <body>
-
-    <div class="share-popup" id="postingBox">
+    <div class="share-popup popup">
         <div class="form">
             <input class="form-control" id="profile_img_url" placeholder="이미지 URL">
         </div>
@@ -505,17 +608,38 @@
             <div id="saveBtn" type="button">등록하기</div>
             <div class="cancel-btn" type="button">취소</div>
         </div>
+    </div>
 
+    <div class="update-popup popup">
+        <div class="form">
+            <input class="form-control" data-id='' id="profile_img_url" placeholder="이미지 URL">
+        </div>
+        <div class="form">
+            <input class="form-control" data-id=''id="name" placeholder="이름">
+        </div>
+
+        <div class="form">
+            <input class="form-control" data-id='' id="goal" placeholder="나의 꿈">
+        </div>
+
+        <div class="form-floating mb-3">
+            <textarea id="description" data-id='' rows="4" cols="50" placeholder="나의 소개"></textarea>
+        </div>
+
+        <div class="button-wrap">
+            <div id="saveBtn" type="button">등록하기</div>
+            <div class="cancel-btn" type="button">취소</div>
+        </div>
     </div>
 
     <div class="delete-popup">
         <p class="warning-text">정보를 삭제하시겠습니까?</p>
         <div class="button-wrap">
-            <div id="deleteBtn" data-doc-id="여기 아이디값 넣어야해요">삭제하기</div>
+            <div id="deleteBtn" data-id="">삭제하기</div>
             <div class="cancel-btn" type="button">취소</div>
         </div>
     </div>
-    
+
     <div class="disabled-cover"></div>
 
     <div class="share-btn">나의 꿈 공유하기</div>
@@ -526,9 +650,10 @@
     </div>
     <div class="profile-area">
         <div class="inner">
-            <div class="profile-info-wrap">
+            <div class="profile-info-wrap" id="profileList">
                 <div class="profile-info">
-                    <div class="delete-btn"></div>
+                    <div class="delete-btn" data-id="test"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/sgQTLY.jpg" alt="원형 이미지">
                     </div>
@@ -536,7 +661,8 @@
                     <p class="p-name">어동선</p>
                 </div>
                 <div class="profile-info">
-                    <div class="delete-btn"></div>
+                    <div class="delete-btn" data-id="tes2"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/cSGMPG.jpg" alt="원형 이미지">
                     </div>
@@ -544,7 +670,8 @@
                     <p class="p-name">김예현</p>
                 </div>
                 <div class="profile-info">
-                    <div class="delete-btn"></div>
+                    <div class="delete-btn" data-id="test3"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/mATD3g.png" alt="원형 이미지">
                     </div>
@@ -552,7 +679,8 @@
                     <p class="p-name">박준영</p>
                 </div>
                 <div class="profile-info">
-                    <div class="delete-btn"></div>
+                    <div class="delete-btn" data-id="tes4"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
                     </div>
@@ -561,7 +689,18 @@
                 </div>
 
                 <div class="profile-info">
-                    <div class="delete-btn"></div>
+                    <div class="delete-btn" data-id="test5"></div>
+                    <div class="update-btn" data-id="test"><i class="fa-solid fa-pen"></i></div>
+                    <div class="profile-image">
+                        <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
+                    </div>
+                    <p class="p-goal">자바스프링 마스터</p>
+                    <p class="p-name">황태경</p>
+                </div>
+
+                <div class="profile-info">
+                    <div class="delete-btn" data-id="test6"></div>
+                    <div class="update-btn" data-id="test"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style="fill : #c6c6c6" d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></div>
                     <div class="profile-image">
                         <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
                     </div>
@@ -572,98 +711,112 @@
 
         </div>
     </div>
-    <div class="profile-detail-area">
-        <div class="inner">
-            <div class="profile-detail-wrap">
-                <div class="profile-detail-info">
-                    <div class="profile-image">
-                        <img src="https://ifh.cc/g/sgQTLY.jpg" alt="원형 이미지">
-                    </div>
-                    <div class="text-wrap">
-                        <p class="p-d-is">나의 꿈은</p>
-                        <div class="p-d-goal-name-wrap">
-                            <span class="p-d-goal">최고의 CTO</span>
-                            <span class="p-d-name">어동선</span>
+    <div id="profileDetailInfoList">
+        <div class="profile-detail-area">
+            <div class="inner">
+                <div class="profile-detail-wrap">
+                    <div class="profile-detail-info">
+                        <div class="profile-image">
+                            <img src="https://ifh.cc/g/sgQTLY.jpg" alt="원형 이미지">
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
-                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
-                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
-                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <div class="text-wrap">
+                            <p class="p-d-is">나의 꿈은</p>
+                            <div class="p-d-goal-name-wrap">
+                                <span class="p-d-goal">최고의 CTO</span>
+                                <span class="p-d-name">어동선</span>
+                            </div>
+                            <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다
+                                많이
+                                눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에
+                                재미를
+                                느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의
+                                개발자라기
+                                보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        </div>
+
+
                     </div>
-
-
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="profile-detail-area">
-        <div class="inner">
-            <div class="profile-detail-wrap">
-                <div class="profile-detail-info">
-                    <div class="profile-image">
-                        <img src="https://ifh.cc/g/cSGMPG.jpg" alt="원형 이미지">
-                    </div>
-                    <div class="text-wrap">
-                        <p class="p-d-is">나의 꿈은</p>
-                        <div class="p-d-goal-name-wrap">
-                            <span class="p-d-goal">포기하지 않는 개발자</span>
-                            <span class="p-d-name">김예현</span>
+        <div class="profile-detail-area">
+            <div class="inner">
+                <div class="profile-detail-wrap">
+                    <div class="profile-detail-info">
+                        <div class="profile-image">
+                            <img src="https://ifh.cc/g/cSGMPG.jpg" alt="원형 이미지">
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
-                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
-                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
-                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <div class="text-wrap">
+                            <p class="p-d-is">나의 꿈은</p>
+                            <div class="p-d-goal-name-wrap">
+                                <span class="p-d-goal">포기하지 않는 개발자</span>
+                                <span class="p-d-name">김예현</span>
+                            </div>
+                            <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다
+                                많이
+                                눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에
+                                재미를
+                                느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의
+                                개발자라기
+                                보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        </div>
+
+
                     </div>
-
-
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="profile-detail-area">
-        <div class="inner">
-            <div class="profile-detail-wrap">
-                <div class="profile-detail-info">
-                    <div class="profile-image">
-                        <img src="https://ifh.cc/g/mATD3g.png" alt="원형 이미지">
-                    </div>
-                    <div class="text-wrap">
-                        <p class="p-d-is">나의 꿈은</p>
-                        <div class="p-d-goal-name-wrap">
-                            <span class="p-d-goal">백엔드의 정점</span>
-                            <span class="p-d-name">박준영</span>
+        <div class="profile-detail-area">
+            <div class="inner">
+                <div class="profile-detail-wrap">
+                    <div class="profile-detail-info">
+                        <div class="profile-image">
+                            <img src="https://ifh.cc/g/mATD3g.png" alt="원형 이미지">
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
-                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
-                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
-                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <div class="text-wrap">
+                            <p class="p-d-is">나의 꿈은</p>
+                            <div class="p-d-goal-name-wrap">
+                                <span class="p-d-goal">백엔드의 정점</span>
+                                <span class="p-d-name">박준영</span>
+                            </div>
+                            <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다
+                                많이
+                                눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에
+                                재미를
+                                느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의
+                                개발자라기
+                                보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        </div>
+
+
                     </div>
-
-
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="profile-detail-area">
-        <div class="inner">
-            <div class="profile-detail-wrap">
-                <div class="profile-detail-info">
-                    <div class="profile-image">
-                        <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
-                    </div>
-                    <div class="text-wrap">
-                        <p class="p-d-is">나의 꿈은</p>
-                        <div class="p-d-goal-name-wrap">
-                            <span class="p-d-goal">자바스프링 마스터</span>
-                            <span class="p-d-name">황태경</span>
+        <div class="profile-detail-area">
+            <div class="inner">
+                <div class="profile-detail-wrap">
+                    <div class="profile-detail-info">
+                        <div class="profile-image">
+                            <img src="https://ifh.cc/g/0RL9V6.jpg" alt="원형 이미지">
                         </div>
-                        <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다 많이
-                            눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에 재미를
-                            느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의 개발자라기
-                            보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        <div class="text-wrap">
+                            <p class="p-d-is">나의 꿈은</p>
+                            <div class="p-d-goal-name-wrap">
+                                <span class="p-d-goal">자바스프링 마스터</span>
+                                <span class="p-d-name">황태경</span>
+                            </div>
+                            <span class="p-d-description">개발의 세계는 너무 넓고 뛰어난 사람들이 너무나 많습니다.<br>비 전공자인 저는 처음 개발을 배울 때 누구보다
+                                많이
+                                눈치를 보고 이는 저에게 큰 부담으로 다가왔었습니다.<br><br>하지만 개발을 시작한지 어느덧 3년이 되니, 스스로 공부할 방향성을 찾을 수 있었고, 개발에
+                                재미를
+                                느끼게 되었습니다. 이런 깨달음은 짧기도 하지만 길었던 3년이란 시간에 포기하지 않았던 나 자신이 있어서 가능했다고 생각합니다. 누구보다 뛰어난 지식의
+                                개발자라기
+                                보단, 포기하지 않는 개발자가 되는게 저의 목표입니다.</span>
+                        </div>
                     </div>
                 </div>
             </div>
